@@ -1,20 +1,22 @@
 package de.mkccl.flyingbarber.calender.service.impl;
 
-import de.mkccl.flyingbarber.calender.model.DayModel;
-import de.mkccl.flyingbarber.calender.model.HourModel;
-import de.mkccl.flyingbarber.calender.model.MonthModel;
+import de.mkccl.flyingbarber.calender.model.*;
+import de.mkccl.flyingbarber.calender.repository.EmployeeRepository;
 import de.mkccl.flyingbarber.calender.utils.CalenderUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 public class CalenderServiceImpl implements CalenderService{
 
-
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @Override
     public MonthModel showCalender(int yearValue, int dayValue, int monthValue) throws ParseException {
@@ -30,7 +32,7 @@ public class CalenderServiceImpl implements CalenderService{
         /**
          * Gibt die Anzahl der Tage von einem Jahr und seine Monate zurück.
          */
-        int days = calenderUtils.getCurrentDaysForMonth(yearValue, dayValue);
+        int days = calenderUtils.getCurrentDaysForMonth(yearValue, monthValue);
 
         List<DayModel> dayModels = new ArrayList<>();
 
@@ -40,12 +42,12 @@ public class CalenderServiceImpl implements CalenderService{
 
 
 
-        for (int i = 0; i < days; i++) {
+        for (int i = dayValue; i <= days; i++) {
             DayModel dayModel = new DayModel();
             List<HourModel> hourModelList = new ArrayList<>();
 
-            dayModel.setDay(i + 1);
-            dayModel.setDayName(calenderUtils.getDayName(yearValue, monthValue, i + 1));
+            dayModel.setDay(i);
+            dayModel.setDayName(calenderUtils.getDayName(yearValue, monthValue, i));
 
             for (int j = 1; j <= 24 ; j++) {
                 HourModel hourModel = new HourModel();
@@ -75,5 +77,15 @@ public class CalenderServiceImpl implements CalenderService{
         return monthModel;
 
 
+    }
+
+    @Override
+    public EmployeeModel addEmployeeToCalender(EmployeeModel employeeModel) {
+
+        List<EmployeeCalenderModel> employeeCalenderModel = new ArrayList<>(employeeModel.getDate());
+
+        employeeModel.setDate(employeeCalenderModel);
+
+        return employeeRepository.save(employeeModel);
     }
 }

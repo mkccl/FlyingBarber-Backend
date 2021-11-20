@@ -18,7 +18,8 @@ public class CalenderUtils {
 
 
     public int getCurrentDaysForMonth(int year, int month) {
-        YearMonth yearMonth = YearMonth.of(year, month);
+        YearMonth yearMonth = YearMonth.of(year,month);
+        System.out.println("Lenght of Days in Month: " + yearMonth.lengthOfMonth());
         return yearMonth.lengthOfMonth();
     }
 
